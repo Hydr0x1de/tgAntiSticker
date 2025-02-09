@@ -36,6 +36,10 @@ def start_message(message):
 def add_sticker_pack(chat_id, sticker_pack):
     conn = sqlite3.connect('sticker_packs.db')
     cursor = conn.cursor()
+    # if this sticker pack is already in the list, do nothing
+    cursor.execute('SELECT * FROM sticker_packs WHERE chat_id = ? AND sticker_pack = ?', (chat_id, sticker_pack))
+    if cursor.fetchall():
+        return
     cursor.execute('INSERT INTO sticker_packs (chat_id, sticker_pack) VALUES (?, ?)', (chat_id, sticker_pack))
     conn.commit()
     conn.close()
