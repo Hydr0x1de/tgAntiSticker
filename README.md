@@ -11,7 +11,7 @@ tgAntiSticker is a Telegram bot designed to help manage and control the use of s
 
 1. Clone the repository:
     ```sh
-    git clone https://github.com/yourusername/tgAntiSticker.git
+    git clone https://github.com/Hydr0x1de/tgAntiSticker.git
     ```
 2. Navigate to the project directory:
     ```sh
