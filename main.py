@@ -83,6 +83,22 @@ def delete_context(chat_id):
     conn.close()
 
 
+@bot.message_handler(commands=['addr', 'addreply'])
+def add_on_reply(message):
+    chat_id = message.chat.id
+    sticker_pack = message.reply_to_message.sticker.set_name
+    add_sticker_pack(chat_id, sticker_pack)
+    bot.send_message(chat_id, f'Sticker-pack {sticker_pack} added to the ban list')
+
+
+@bot.message_handler(commands=['remr', 'removereply'])
+def remove_on_reply(message):
+    chat_id = message.chat.id
+    sticker_pack = message.reply_to_message.sticker.set_name
+    remove_sticker_pack(chat_id, sticker_pack)
+    bot.send_message(chat_id, f'Sticker-pack {sticker_pack} removed from the ban list')
+
+
 @bot.message_handler(commands=['add'])
 def add_sticker_pack_command(message):
     chat_id = message.chat.id
@@ -157,7 +173,7 @@ def is_group_owner(message):
     return chat_member.status == 'creator'
 
 
-@bot.message_handler(commands=['add', 'remove', 'list'])
+@bot.message_handler(commands=['add', 'remove', 'list', 'addr', 'remr', 'addreply', 'removereply'])
 def restricted_commands(message):
     if not is_group_owner(message):
         bot.send_message(message.chat.id, 'Only the group owner can use this command.')
