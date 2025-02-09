@@ -106,6 +106,7 @@ def add_on_reply(message):
         return
     add_sticker_pack(chat_id, sticker_pack)
     bot.send_message(chat_id, f'Sticker-pack {sticker_pack} added to the ban list')
+    bot.delete_message(chat_id, message.message_id)
 
 
 @bot.message_handler(commands=['remr', 'removereply'])
@@ -119,6 +120,7 @@ def remove_on_reply(message):
     sticker_pack = message.reply_to_message.sticker.set_name
     remove_sticker_pack(chat_id, sticker_pack)
     bot.send_message(chat_id, f'Sticker-pack {sticker_pack} removed from the ban list')
+    bot.delete_message(chat_id, message.message_id)
 
 
 @bot.message_handler(commands=['add'])
@@ -154,11 +156,13 @@ def check_sticker(message):
         add_sticker_pack(message.chat.id, message.sticker.set_name)
         bot.send_message(message.chat.id, f'Sticker-pack {message.sticker.set_name} added to the ban list')
         delete_context(message.chat.id)
+        bot.delete_message(message.chat.id, message.message_id)
         return
     if context == 'remove':
         remove_sticker_pack(message.chat.id, message.sticker.set_name)
         bot.send_message(message.chat.id, f'Sticker-pack {message.sticker.set_name} removed from the ban list')
         delete_context(message.chat.id)
+        bot.delete_message(message.chat.id, message.message_id)
         return
 
     chat_id = message.chat.id
