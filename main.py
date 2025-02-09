@@ -3,10 +3,15 @@ Telegram bot on PyTelegramBotAPI made to protect groups from spam of specified s
 """
 
 import telebot
-from secret import TOKEN
 import sqlite3
 import pathlib
 
+# if no secret.py file, create it with TOKEN environment variable
+try:
+    from secret import TOKEN
+except ImportError:
+    import os
+    TOKEN = os.environ.get('TOKEN')
 
 # make sure database file exists
 pathlib.Path('sticker_packs.db').touch()

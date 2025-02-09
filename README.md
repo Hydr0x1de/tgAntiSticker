@@ -26,7 +26,7 @@ tgAntiSticker is a Telegram bot designed to help manage and control the use of s
 ## Usage
 
 1. Set up your bot by creating a new bot on Telegram and obtaining the API token.
-2. write `TOKEN = 'yourTokenHere'` in `secret.py`.
+2. write `TOKEN = 'yourTokenHere'` in `secret.py`, or set environment variable TOKEN.
 3. Run the bot:
     ```sh
     python3 main.py
