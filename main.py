@@ -99,6 +99,16 @@ def remove_sticker_pack_command(message):
     return
 
 
+@bot.message_handler(commands=['list'])
+def show_banned_packs(message):
+    chat_id = message.chat.id
+    packs = get_banned_sticker_packs(chat_id)
+    if len(packs) == 0:
+        bot.send_message(chat_id, 'No sticker-packs are banned in this chat')
+    else:
+        bot.send_message(chat_id, 'Banned sticker-packs: ' + ', '.join(packs))
+
+
 @bot.message_handler(content_types=['sticker'])
 def check_sticker(message):
     context = get_context(message.chat.id)
