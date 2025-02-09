@@ -30,7 +30,7 @@ def start_message(message):
         'Just add me to your group and make me an admin. \n' +
         'Then I will delete stickers from the sticker-packs you will specify. \n' +
         'To add a sticker-pack to the ban list, send me command /add and a sticker from this pack. \n' +
-        'To remove a sticker-pack from the ban list, send me command /remove and a sticker from this pack again. \n' +
+        'To remove a sticker-pack from the ban list, send me command /remove or /rem and a sticker from this pack again. \n' +  # noqa: E501
         'To see the list of banned sticker-packs, send me command /list. \n' +
         'To add a sticker-pack to the ban list on reply, use command /addreply or /addr. \n' +
         'To remove a sticker-pack from the ban list on reply, use command /removereply or /remr. \n' +
@@ -141,7 +141,7 @@ def add_sticker_pack_command(message):
     return
 
 
-@bot.message_handler(commands=['remove'])
+@bot.message_handler(commands=['remove', 'rem'])
 def remove_sticker_pack_command(message):
     if not is_group_owner(message):
         bot.send_message(message.chat.id, 'Only the group owner can use this command.')
