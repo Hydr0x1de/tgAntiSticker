@@ -99,7 +99,11 @@ def delete_context(chat_id):
 @bot.message_handler(commands=['addr', 'addreply'])
 def add_on_reply(message):
     chat_id = message.chat.id
-    sticker_pack = message.reply_to_message.sticker.set_name
+    try:
+        sticker_pack = message.reply_to_message.sticker.set_name
+    except AttributeError:
+        bot.send_message(chat_id, 'Reply to a sticker to add its pack to the ban list')
+        return
     add_sticker_pack(chat_id, sticker_pack)
     bot.send_message(chat_id, f'Sticker-pack {sticker_pack} added to the ban list')
 
@@ -107,6 +111,11 @@ def add_on_reply(message):
 @bot.message_handler(commands=['remr', 'removereply'])
 def remove_on_reply(message):
     chat_id = message.chat.id
+    try:
+        sticker_pack = message.reply_to_message.sticker.set_name
+    except AttributeError:
+        bot.send_message(chat_id, 'Reply to a sticker to add its pack to the ban list')
+        return
     sticker_pack = message.reply_to_message.sticker.set_name
     remove_sticker_pack(chat_id, sticker_pack)
     bot.send_message(chat_id, f'Sticker-pack {sticker_pack} removed from the ban list')
