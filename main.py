@@ -152,6 +152,24 @@ def create_table():
     conn.close()
 
 
+def is_group_owner(message):
+    chat_member = bot.get_chat_member(message.chat.id, message.from_user.id)
+    return chat_member.status == 'creator'
+
+
+@bot.message_handler(commands=['add', 'remove', 'list'])
+def restricted_commands(message):
+    if not is_group_owner(message):
+        bot.send_message(message.chat.id, 'Only the group owner can use this command.')
+        return
+    if message.text.startswith('/add'):
+        add_sticker_pack_command(message)
+    elif message.text.startswith('/remove'):
+        remove_sticker_pack_command(message)
+    elif message.text.startswith('/list'):
+        show_banned_packs(message)
+
+
 if __name__ == '__main__':
     create_table()
     bot.polling()
