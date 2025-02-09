@@ -162,7 +162,6 @@ def check_sticker(message):
         remove_sticker_pack(message.chat.id, message.sticker.set_name)
         bot.send_message(message.chat.id, f'Sticker-pack {message.sticker.set_name} removed from the ban list')
         delete_context(message.chat.id)
-        bot.delete_message(message.chat.id, message.message_id)
         return
 
     chat_id = message.chat.id
