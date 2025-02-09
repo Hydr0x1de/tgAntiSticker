@@ -196,7 +196,6 @@ def restricted_commands(message):
         add_on_reply(message)
     elif message.text.startswith('/remr') or message.text.startswith('/removereply'):
         remove_on_reply(message)
-    
 
 
 if __name__ == '__main__':
