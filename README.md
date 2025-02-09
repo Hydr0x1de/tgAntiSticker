@@ -1,6 +1,6 @@
 # tgAntiSticker
 
-tgAntiSticker is a Telegram bot designed to help manage and control the use of stickers in your Telegram groups. It provides various features to ensure that stickers are used appropriately and do not disrupt the flow of conversation.
+tgAntiSticker is a Telegram bot designed to help manage and control the use of stickers in your Telegram groups. It provides feature to ensure that stickers are used appropriately and do not disrupt the flow of conversation.
 
 ## Features
 
