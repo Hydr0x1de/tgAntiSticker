@@ -34,6 +34,7 @@ def start_message(message):
         'To see the list of banned sticker-packs, send me command /list. \n' +
         'To add a sticker-pack to the ban list on reply, use command /addreply or /addr. \n' +
         'To remove a sticker-pack from the ban list on reply, use command /removereply or /remr. \n' +
+        'To close the context, use command /close. \n' +
         '\n**Commands can be used only by the group owner.**'
     )
 
@@ -149,6 +150,11 @@ def show_banned_packs(message):
         bot.send_message(chat_id, 'Banned sticker-packs: ' + ', '.join(packs))
 
 
+@bot.message_handler(content_types=['close'])
+def close_context(message):
+    delete_context(message.chat.id)
+
+
 @bot.message_handler(content_types=['sticker'])
 def check_sticker(message):
     context = get_context(message.chat.id)
@@ -198,7 +204,7 @@ def is_group_owner(message):
     return chat_member.status == 'creator'
 
 
-@bot.message_handler(commands=['add', 'remove', 'list', 'addr', 'remr', 'addreply', 'removereply'])
+@bot.message_handler(commands=['add', 'remove', 'list', 'addr', 'remr', 'addreply', 'removereply', 'close'])
 def restricted_commands(message):
     if not is_group_owner(message):
         bot.send_message(message.chat.id, 'Only the group owner can use this command.')
@@ -213,6 +219,8 @@ def restricted_commands(message):
         add_on_reply(message)
     elif message.text.startswith('/remr') or message.text.startswith('/removereply'):
         remove_on_reply(message)
+    elif message.text.startswith('/close'):
+        close_context(message)
 
 
 if __name__ == '__main__':
