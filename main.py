@@ -99,6 +99,9 @@ def delete_context(chat_id):
 
 @bot.message_handler(commands=['addr', 'addreply'])
 def add_on_reply(message):
+    if not is_group_owner(message):
+        bot.send_message(message.chat.id, 'Only the group owner can use this command.')
+        return
     chat_id = message.chat.id
     try:
         sticker_pack = message.reply_to_message.sticker.set_name
@@ -112,6 +115,9 @@ def add_on_reply(message):
 
 @bot.message_handler(commands=['remr', 'removereply'])
 def remove_on_reply(message):
+    if not is_group_owner(message):
+        bot.send_message(message.chat.id, 'Only the group owner can use this command.')
+        return
     chat_id = message.chat.id
     try:
         sticker_pack = message.reply_to_message.sticker.set_name
@@ -126,6 +132,9 @@ def remove_on_reply(message):
 
 @bot.message_handler(commands=['add'])
 def add_sticker_pack_command(message):
+    if not is_group_owner(message):
+        bot.send_message(message.chat.id, 'Only the group owner can use this command.')
+        return
     chat_id = message.chat.id
     bot.send_message(chat_id, 'Send me a sticker from the sticker-pack you want to add to the ban list')
     save_context(chat_id, 'add')
@@ -134,6 +143,9 @@ def add_sticker_pack_command(message):
 
 @bot.message_handler(commands=['remove'])
 def remove_sticker_pack_command(message):
+    if not is_group_owner(message):
+        bot.send_message(message.chat.id, 'Only the group owner can use this command.')
+        return
     chat_id = message.chat.id
     bot.send_message(chat_id, 'Send me a sticker from the sticker-pack you want to remove from the ban list')
     save_context(chat_id, 'remove')
@@ -142,6 +154,9 @@ def remove_sticker_pack_command(message):
 
 @bot.message_handler(commands=['list'])
 def show_banned_packs(message):
+    if not is_group_owner(message):
+        bot.send_message(message.chat.id, 'Only the group owner can use this command.')
+        return
     chat_id = message.chat.id
     packs = get_banned_sticker_packs(chat_id)
     if len(packs) == 0:
@@ -152,6 +167,9 @@ def show_banned_packs(message):
 
 @bot.message_handler(content_types=['close'])
 def close_context(message):
+    if not is_group_owner(message):
+        bot.send_message(message.chat.id, 'Only the group owner can use this command.')
+        return
     delete_context(message.chat.id)
 
 
@@ -202,25 +220,6 @@ def create_table():
 def is_group_owner(message):
     chat_member = bot.get_chat_member(message.chat.id, message.from_user.id)
     return chat_member.status == 'creator'
-
-
-@bot.message_handler(commands=['add', 'remove', 'list', 'addr', 'remr', 'addreply', 'removereply', 'close'])
-def restricted_commands(message):
-    if not is_group_owner(message):
-        bot.send_message(message.chat.id, 'Only the group owner can use this command.')
-        return
-    if message.text.startswith('/add'):
-        add_sticker_pack_command(message)
-    elif message.text.startswith('/remove'):
-        remove_sticker_pack_command(message)
-    elif message.text.startswith('/list'):
-        show_banned_packs(message)
-    elif message.text.startswith('/addr') or message.text.startswith('/addreply'):
-        add_on_reply(message)
-    elif message.text.startswith('/remr') or message.text.startswith('/removereply'):
-        remove_on_reply(message)
-    elif message.text.startswith('/close'):
-        close_context(message)
 
 
 if __name__ == '__main__':
