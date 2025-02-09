@@ -54,30 +54,65 @@ def get_banned_sticker_packs(chat_id):
     return [x[0] for x in result]
 
 
+def save_context(chat_id, context):
+    conn = sqlite3.connect('sticker_packs.db')
+    cursor = conn.cursor()
+    cursor.execute('INSERT INTO context (chat_id, context) VALUES (?, ?)', (chat_id, context))
+    conn.commit()
+    conn.close()
+
+
+def get_context(chat_id):
+    conn = sqlite3.connect('sticker_packs.db')
+    cursor = conn.cursor()
+    cursor.execute('SELECT context FROM context WHERE chat_id = ?', (chat_id,))
+    result = cursor.fetchall()
+    conn.close()
+    if len(result) == 0:
+        return None
+    if len(result[0]) == 0:
+        return None
+    return result[0][0]
+
+
+def delete_context(chat_id):
+    conn = sqlite3.connect('sticker_packs.db')
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM context WHERE chat_id = ?', (chat_id,))
+    conn.commit()
+    conn.close()
+
+
 @bot.message_handler(commands=['add'])
 def add_sticker_pack_command(message):
     chat_id = message.chat.id
-    sticker_pack = message.sticker.set_name
-    if sticker_pack in get_banned_sticker_packs(chat_id):
-        bot.send_message(chat_id, 'This sticker-pack is already in the ban list')
-    else:
-        add_sticker_pack(chat_id, sticker_pack)
-        bot.send_message(chat_id, 'Sticker-pack added to the ban list')
+    bot.send_message(chat_id, 'Send me a sticker from the sticker-pack you want to add to the ban list')
+    save_context(chat_id, 'add')
+    return
 
 
 @bot.message_handler(commands=['remove'])
 def remove_sticker_pack_command(message):
     chat_id = message.chat.id
-    sticker_pack = message.sticker.set_name
-    if sticker_pack not in get_banned_sticker_packs(chat_id):
-        bot.send_message(chat_id, 'This sticker-pack is not in the ban list')
-    else:
-        remove_sticker_pack(chat_id, sticker_pack)
-        bot.send_message(chat_id, 'Sticker-pack removed from the ban list') 
+    bot.send_message(chat_id, 'Send me a sticker from the sticker-pack you want to remove from the ban list')
+    save_context(chat_id, 'remove')
+    return
 
 
 @bot.message_handler(content_types=['sticker'])
 def check_sticker(message):
+    context = get_context(message.chat.id)
+    if context == 'add':
+        add_sticker_pack(message.chat.id, message.sticker.set_name)
+        bot.send_message(message.chat.id, f'Sticker-pack {message.sticker.set_name} added to the ban list')
+        delete_context(message.chat.id)
+        return
+    if context == 'remove':
+        remove_sticker_pack(message.chat.id, message.sticker.set_name)
+        bot.send_message(message.chat.id, f'Sticker-pack {message.sticker.set_name} removed from the ban list')
+        delete_context(message.chat.id)
+        return
+
     chat_id = message.chat.id
     sticker_pack = message.sticker.set_name
     if sticker_pack in get_banned_sticker_packs(chat_id):
@@ -88,7 +123,21 @@ def create_table():
     conn = sqlite3.connect('sticker_packs.db')
     cursor = conn.cursor()
     cursor.execute(
-        'CREATE TABLE IF NOT EXISTS sticker_packs (id primary key autoincrement, chat_id integer, sticker_pack text)')
+        '''
+        CREATE TABLE IF NOT EXISTS sticker_packs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            chat_id integer,
+            sticker_pack text
+        )
+        ''')
+    cursor.execute(
+        '''
+        CREATE TABLE IF NOT EXISTS context (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            chat_id integer,
+            context text
+        )
+        ''')
     conn.commit()
     conn.close()
 
